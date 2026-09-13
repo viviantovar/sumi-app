@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b0417a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sumi Queen">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="icono.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icono.png">
+<title>Sumi Queen</title>
+<style>
+:root{--bg:#faf6f8;--card:#fff;--tx:#2b2028;--mut:#8b7c85;--bor:#ecdfe6;--acc:#b0417a;--ok:#2e7d5b;--no:#b23b3b}
+@media(prefers-color-scheme:dark){:root{--bg:#171216;--card:#221b20;--tx:#f3eaef;--mut:#a999a3;--bor:#372c33;--acc:#e07aae}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:0 0 40px;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;display:flex;align-items:center;gap:11px;background:var(--acc);color:#fff;padding:12px 16px calc(12px + env(safe-area-inset-top));z-index:5}
+header h1{margin:0;font-size:18px;letter-spacing:.3px}
+header p{margin:2px 0 0;opacity:.9;font-size:13px}
+.logo{width:42px;height:42px;border-radius:50%;flex:0 0 auto;background:#fff}
+.inst{margin-left:auto;flex:0 0 auto;background:#fff;color:var(--acc);border:0;border-radius:20px;padding:9px 15px;font-weight:700;font-size:13px}
+nav{display:flex;gap:6px;padding:12px 16px 4px}
+nav button{flex:1;padding:9px 4px;border-radius:11px;color:var(--tx);background:var(--card);border:1px solid var(--bor);font-weight:600;font-size:14px}
+nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.desp{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px 0}
+.flecha{width:42px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:var(--card);border:1px solid var(--bor);color:var(--acc);font-size:24px;font-weight:700;flex:0 0 auto}
+.desp-txt{font-size:14px;font-weight:700;text-align:center;flex:1}
+.volver{display:block;font-size:11px;color:var(--acc);text-decoration:none;font-weight:600;margin-top:2px}
+.resumen{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:12px 16px 4px}
+.res{background:var(--card);border:1px solid var(--bor);border-radius:11px;padding:9px 4px;text-align:center}
+.res b{display:block;font-size:18px}
+.res span{font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.3px}
+.pago{margin:8px 16px 0;background:var(--card);border:1px solid var(--bor);border-left:5px solid var(--acc);border-radius:11px;padding:10px 12px;font-size:14px}
+.pago b{color:var(--acc)}
+main{padding:8px 16px}
+.grupo{margin-bottom:8px}
+.ghead{display:flex;justify-content:space-between;align-items:baseline;padding:10px 2px 6px;font-weight:700;font-size:15px}
+.gcount{font-weight:400;font-size:12px;color:var(--mut)}
+.cita{background:var(--card);border:1px solid var(--bor);border-radius:16px;padding:14px;margin-bottom:12px}
+.cita.asistio{border-left:5px solid var(--ok)}
+.cita.no_asistio{border-left:5px solid var(--no)}
+.cita.cancelada{opacity:.55}
+.top{display:flex;justify-content:space-between;align-items:center}
+.hora{font-size:20px;font-weight:700;color:var(--acc)}
+.chip{font-size:11px;padding:4px 9px;border-radius:20px;background:var(--bg);border:1px solid var(--bor);color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
+.chip-asistio{background:var(--ok);color:#fff;border-color:var(--ok)}
+.chip-no_asistio{background:var(--no);color:#fff;border-color:var(--no)}
+h2{margin:6px 0 2px;font-size:17px}
+.serv{margin:0;font-size:14px}
+.ficha{margin:6px 0 0;color:var(--mut);font-size:12.5px}
+.alerta{color:var(--no)}
+.notas{margin-top:6px;font-size:12.5px;background:var(--bg);border-radius:8px;padding:6px 8px;color:var(--mut)}
+.campos{display:flex;gap:8px;margin-top:12px}
+.monto{width:96px;padding:12px 8px;border-radius:12px;border:1px solid var(--bor);background:var(--bg);color:var(--tx);font-size:16px;text-align:center}
+.extra{flex:1;min-width:0;padding:12px 10px;border-radius:12px;border:1px solid var(--bor);background:var(--bg);color:var(--tx);font-size:15px}
+.quien{display:flex;gap:8px;margin-top:8px}
+.qbtn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid var(--bor);background:var(--bg);color:var(--mut);font-size:14px;font-weight:600}
+.qbtn.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.acciones{display:flex;gap:8px;margin-top:8px}
+.btn{flex:1;padding:13px 8px;border:0;border-radius:12px;font-size:15px;font-weight:700;color:#fff}
+.btn.si{background:var(--ok)}.btn.no{background:var(--no)}
+.btn:active{transform:scale(.97)}
+.pie{margin-top:10px}
+.wa{font-size:13px;color:var(--acc);text-decoration:none;font-weight:600}
+.vacio{text-align:center;color:var(--mut);padding:40px 20px}
+.aviso-caja{margin:16px;padding:20px;background:var(--card);border:1px solid var(--bor);border-radius:16px;text-align:center;color:var(--mut)}
+#aviso{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:30px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:9;max-width:90%;text-align:center}
+#aviso.ver{opacity:1}
+</style>
+</head>
+<body>
+
+<header>
+  <img class="logo" src="icono.png" alt="">
+  <div><h1>Sumi Queen</h1><p id="periodo">Cargando…</p></div>
+  <button id="inst" class="inst" hidden>Instalar</button>
+</header>
+
+<nav>
+  <button data-p="hoy" class="on">Hoy</button>
+  <button data-p="manana">Mañana</button>
+  <button data-p="semana">Semana</button>
+  <button data-p="mes">Mes</button>
+</nav>
+
+<div class="desp">
+  <button class="flecha" id="atras" aria-label="Anterior">&#8249;</button>
+  <span class="desp-txt"><span id="desp-txt"></span><a id="volver" class="volver" href="#" hidden>volver a hoy</a></span>
+  <button class="flecha" id="adelante" aria-label="Siguiente">&#8250;</button>
+</div>
+
+<div class="resumen">
+  <div class="res"><b id="m-escribieron">—</b><span>escribieron</span></div>
+  <div class="res"><b id="m-agendaron">—</b><span>agendaron</span></div>
+  <div class="res"><b id="m-vinieron">—</b><span>vinieron</span></div>
+  <div class="res"><b id="m-faltaron">—</b><span>faltaron</span></div>
+  <div class="res"><b id="m-soles">—</b><span>soles</span></div>
+</div>
+
+<div id="pago" class="pago" hidden></div>
+<main id="lista"></main>
+<div id="aviso"></div>
+
+<script>
+var N8N = 'https://vivian-tovar-ig-n8n.oxfm5e.easypanel.host';
+
+// La clave llega por la direccion la primera vez y queda guardada en este telefono
+var KEY = '';
+try {
+  var enUrl = new URLSearchParams(location.search).get('key');
+  if (enUrl) { KEY = enUrl; localStorage.setItem('sumi_key', enUrl); }
+  else { KEY = localStorage.getItem('sumi_key') || ''; }
+} catch (e) { KEY = new URLSearchParams(location.search).get('key') || ''; }
+
+var periodo = 'hoy';
+var desp = 0; // 0 = periodo actual, -1 = anterior, +1 = siguiente
+var citas = [];
+
+var DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+function esc(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function toast(t, largo) {
+  var a = document.getElementById('aviso');
+  a.textContent = t; a.classList.add('ver');
+  clearTimeout(window._t);
+  window._t = setTimeout(function () { a.classList.remove('ver'); }, largo ? 6000 : 1600);
+}
+
+function limaHoy() { return new Date(Date.now() - 5 * 3600 * 1000); }
+
+function etiquetaPeriodo() {
+  var h = limaHoy(), t;
+  if (periodo === 'hoy' || periodo === 'manana') {
+    var d = new Date(h.getTime() + ((periodo === 'manana' ? 1 : 0) + desp) * 86400000);
+    t = DIAS[d.getUTCDay()] + ' ' + d.getUTCDate() + ' de ' + MESES[d.getUTCMonth()];
+  } else if (periodo === 'semana') {
+    var dow = (h.getUTCDay() + 6) % 7;
+    var ini = new Date(h.getTime() - dow * 86400000 + desp * 7 * 86400000);
+    var fin = new Date(ini.getTime() + 6 * 86400000);
+    if (ini.getUTCMonth() !== fin.getUTCMonth()) {
+      t = 'semana del ' + ini.getUTCDate() + ' de ' + MESES[ini.getUTCMonth()] + ' al ' + fin.getUTCDate() + ' de ' + MESES[fin.getUTCMonth()];
+    } else {
+      t = 'semana del ' + ini.getUTCDate() + ' al ' + fin.getUTCDate() + ' de ' + MESES[fin.getUTCMonth()];
+    }
+  } else {
+    var m = new Date(Date.UTC(h.getUTCFullYear(), h.getUTCMonth() + desp, 1));
+    t = MESES[m.getUTCMonth()] + ' ' + m.getUTCFullYear();
+  }
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+function nombreDia(iso) {
+  var p = String(iso).split('-');
+  var d = new Date(Date.UTC(Number(p[0]), Number(p[1]) - 1, Number(p[2])));
+  var t = DIAS[d.getUTCDay()] + ' ' + d.getUTCDate();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+function tarjeta(c) {
+  var id = esc(c.event_id);
+  var estado = c.estado || 'agendada';
+  var monto = (c.monto_final === null || c.monto_final === undefined) ? '' : c.monto_final;
+  var extra = esc(c.servicios_extra || '');
+  var quien = c.atendio || '';
+  var tel = String(c.telefono || '').replace(/[^0-9]/g, '');
+
+  var ficha;
+  if (c.total_asistidas) {
+    ficha = c.total_asistidas + (c.total_asistidas === 1 ? ' visita' : ' visitas');
+    ficha += ' &middot; ha gastado S/ ' + Math.round(Number(c.total_gastado || 0));
+    if (c.ultima_visita) ficha += ' &middot; última ' + esc(c.ultima_visita);
+    if (c.ultimo_servicio) ficha += ' &middot; ' + esc(c.ultimo_servicio);
+  } else if (c.no_shows) { ficha = 'aún no ha venido'; }
+  else { ficha = 'clienta nueva'; }
+  if (c.no_shows >= 2) ficha += ' &middot; <b class="alerta">' + c.no_shows + ' faltas</b>';
+
+  var notas = c.notas ? '<div class="notas">' + esc(c.notas) + '</div>' : '';
+  var wa = tel ? '<div class="pie"><a class="wa" href="https://wa.me/' + tel + '" target="_blank" rel="noopener">Escribirle por WhatsApp</a></div>' : '';
+  var chip = estado === 'asistio' ? 'vino' : estado === 'no_asistio' ? 'no vino' : estado === 'cancelada' ? 'cancelada' : 'pendiente';
+
+  var acciones = estado === 'cancelada' ? '' :
+    '<div class="campos">' +
+      '<input id="m_' + id + '" class="monto" type="number" inputmode="decimal" placeholder="S/ total" value="' + monto + '" onchange="auto(\'' + id + '\')">' +
+      '<input id="x_' + id + '" class="extra" type="text" placeholder="servicios extra" value="' + extra + '" onchange="auto(\'' + id + '\')">' +
+    '</div>' +
+    '<div class="quien">' +
+      '<button type="button" class="qbtn' + (quien === 'Vivian' ? ' on' : '') + '" id="qv_' + id + '" onclick="elegir(\'' + id + '\',\'Vivian\')">Vivian</button>' +
+      '<button type="button" class="qbtn' + (quien === 'Asistente' ? ' on' : '') + '" id="qa_' + id + '" onclick="elegir(\'' + id + '\',\'Asistente\')">Asistente</button>' +
+    '</div>' +
+    '<div class="acciones">' +
+      '<button class="btn si" onclick="marcar(this,\'' + id + '\',\'asistio\')">Vino</button>' +
+      '<button class="btn no" onclick="marcar(this,\'' + id + '\',\'no_asistio\')">No vino</button>' +
+    '</div>';
+
+  return '<article class="cita ' + estado + '" id="c_' + id + '" data-quien="' + esc(quien) + '" data-estado="' + estado + '">' +
+    '<div class="top"><span class="hora">' + esc(c.hora || '') + '</span>' +
+    '<span class="chip chip-' + estado + '">' + chip + '</span></div>' +
+    '<h2>' + esc(c.nombre || 'Sin nombre') + '</h2>' +
+    '<p class="serv">' + esc(c.servicio || '') + '</p>' +
+    '<p class="ficha">' + ficha + '</p>' + notas + acciones + wa +
+    '</article>';
+}
+
+function pintar(escribieron) {
+  document.getElementById('periodo').textContent = etiquetaPeriodo();
+  document.getElementById('desp-txt').textContent = etiquetaPeriodo();
+  document.getElementById('volver').hidden = (desp === 0);
+
+  var vinieron = 0, faltaron = 0, ingreso = 0, pagoAsistente = 0;
+  citas.forEach(function (c) {
+    var m = Number(c.monto_final || 0);
+    if (c.estado === 'asistio') { vinieron++; ingreso += m; if (c.atendio === 'Asistente') pagoAsistente += m * 0.4; }
+    else if (c.estado === 'no_asistio') faltaron++;
+  });
+
+  document.getElementById('m-escribieron').textContent = (escribieron === null || escribieron === undefined) ? '—' : escribieron;
+  document.getElementById('m-agendaron').textContent = citas.length;
+  document.getElementById('m-vinieron').textContent = vinieron;
+  document.getElementById('m-faltaron').textContent = faltaron;
+  document.getElementById('m-soles').textContent = Math.round(ingreso);
+
+  var pago = document.getElementById('pago');
+  if ((periodo === 'semana' || periodo === 'mes') && pagoAsistente > 0) {
+    pago.innerHTML = 'Pago de la asistente (40%): <b>S/ ' + Math.round(pagoAsistente) + '</b>';
+    pago.hidden = false;
+  } else { pago.hidden = true; }
+
+  var lista = document.getElementById('lista');
+  if (citas.length === 0) {
+    lista.innerHTML = '<p class="vacio">No hay citas registradas en este periodo.</p>';
+    return;
+  }
+  if (periodo === 'hoy' || periodo === 'manana') {
+    lista.innerHTML = citas.map(tarjeta).join('');
+    return;
+  }
+  var grupos = {};
+  citas.forEach(function (c) {
+    var d = c.dia_iso || 'sin fecha';
+    if (!grupos[d]) grupos[d] = [];
+    grupos[d].push(c);
+  });
+  lista.innerHTML = Object.keys(grupos).sort().map(function (d) {
+    var g = grupos[d];
+    var total = g.reduce(function (s, c) { return s + (c.estado === 'asistio' ? Number(c.monto_final || 0) : 0); }, 0);
+    return '<div class="grupo"><div class="ghead"><span>' + nombreDia(d) + '</span>' +
+      '<span class="gcount">' + g.length + (g.length === 1 ? ' cita' : ' citas') +
+      (total ? ' &middot; S/ ' + Math.round(total) : '') + '</span></div>' +
+      g.map(tarjeta).join('') + '</div>';
+  }).join('');
+}
+
+function cargar() {
+  if (!KEY) {
+    document.getElementById('lista').innerHTML =
+      '<div class="aviso-caja">Abre esta app usando el enlace completo que incluye tu clave.<br>' +
+      'Una vez que la abras así, queda guardada en este teléfono.</div>';
+    document.getElementById('periodo').textContent = 'Falta la clave';
+    return;
+  }
+  document.getElementById('lista').innerHTML = '<p class="vacio">Cargando…</p>';
+  fetch(N8N + '/webhook/sumi-datos?key=' + encodeURIComponent(KEY) + '&p=' + periodo + '&d=' + desp)
+    .then(function (r) {
+      if (r.status === 401) throw new Error('La clave no es correcta');
+      if (!r.ok) throw new Error('El servidor respondió ' + r.status);
+      return r.json();
+    })
+    .then(function (d) { citas = d.citas || []; pintar(d.escribieron); })
+    .catch(function (e) {
+      document.getElementById('lista').innerHTML = '<div class="aviso-caja">No se pudieron cargar las citas.<br>' + esc(e.message) + '</div>';
+    });
+}
+
+function guardar(id, estado, btn, silencioso) {
+  var card = document.getElementById('c_' + id);
+  var m = document.getElementById('m_' + id);
+  var x = document.getElementById('x_' + id);
+  var datos = {
+    key: KEY, event_id: id, estado: estado,
+    monto: (m && m.value !== '') ? Number(m.value) : null,
+    extras: x ? x.value : '',
+    atendio: card.dataset.quien || ''
+  };
+  if (btn) btn.disabled = true;
+  // text/plain evita que el navegador pida permiso previo al servidor
+  fetch(N8N + '/webhook/sumi-guardar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify(datos)
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && d.ok) {
+        card.dataset.estado = estado;
+        card.className = 'cita ' + estado;
+        var chip = card.querySelector('.chip');
+        chip.className = 'chip chip-' + estado;
+        chip.textContent = estado === 'asistio' ? 'vino' : (estado === 'no_asistio' ? 'no vino' : 'pendiente');
+        // mantener los totales al dia sin recargar todo
+        var c = citas.filter(function (q) { return q.event_id === id; })[0];
+        if (c) {
+          c.estado = estado;
+          c.monto_final = datos.monto;
+          c.servicios_extra = datos.extras;
+          c.atendio = datos.atendio;
+        }
+        actualizarTotales();
+        toast(silencioso ? 'Guardado' : (estado === 'asistio' ? 'Guardado: vino' : 'Guardado: no vino'));
+      } else {
+        toast(d && d.error ? ('No se guardó: ' + d.error) : 'No se pudo guardar', true);
+      }
+      if (btn) btn.disabled = false;
+    })
+    .catch(function () { toast('Sin conexión'); if (btn) btn.disabled = false; });
+}
+
+function actualizarTotales() {
+  var vinieron = 0, faltaron = 0, ingreso = 0, pagoAsistente = 0;
+  citas.forEach(function (c) {
+    var m = Number(c.monto_final || 0);
+    if (c.estado === 'asistio') { vinieron++; ingreso += m; if (c.atendio === 'Asistente') pagoAsistente += m * 0.4; }
+    else if (c.estado === 'no_asistio') faltaron++;
+  });
+  document.getElementById('m-vinieron').textContent = vinieron;
+  document.getElementById('m-faltaron').textContent = faltaron;
+  document.getElementById('m-soles').textContent = Math.round(ingreso);
+  var pago = document.getElementById('pago');
+  if ((periodo === 'semana' || periodo === 'mes') && pagoAsistente > 0) {
+    pago.innerHTML = 'Pago de la asistente (40%): <b>S/ ' + Math.round(pagoAsistente) + '</b>';
+    pago.hidden = false;
+  }
+}
+
+function marcar(btn, id, estado) { guardar(id, estado, btn, false); }
+function auto(id) { var c = document.getElementById('c_' + id); guardar(id, c.dataset.estado || 'agendada', null, true); }
+function elegir(id, quien) {
+  var card = document.getElementById('c_' + id);
+  card.dataset.quien = (card.dataset.quien === quien) ? '' : quien;
+  document.getElementById('qv_' + id).classList.toggle('on', card.dataset.quien === 'Vivian');
+  document.getElementById('qa_' + id).classList.toggle('on', card.dataset.quien === 'Asistente');
+  auto(id);
+}
+
+// pestañas
+Array.prototype.forEach.call(document.querySelectorAll('nav button'), function (b) {
+  b.onclick = function () {
+    Array.prototype.forEach.call(document.querySelectorAll('nav button'), function (o) { o.classList.remove('on'); });
+    b.classList.add('on');
+    periodo = b.dataset.p;
+    desp = 0;
+    cargar();
+  };
+});
+
+// flechas de periodo
+document.getElementById('atras').onclick = function () { desp = Math.max(-36, desp - 1); cargar(); };
+document.getElementById('adelante').onclick = function () { desp = Math.min(36, desp + 1); cargar(); };
+document.getElementById('volver').onclick = function (e) { e.preventDefault(); desp = 0; cargar(); };
+
+// instalacion como app
+var instalable = null;
+window.addEventListener('beforeinstallprompt', function (e) {
+  e.preventDefault(); instalable = e;
+  document.getElementById('inst').hidden = false;
+});
+window.addEventListener('appinstalled', function () {
+  toast('App instalada'); document.getElementById('inst').hidden = true;
+});
+document.getElementById('inst').onclick = function () {
+  var b = this;
+  if (instalable) { instalable.prompt(); instalable.userChoice.then(function () { b.hidden = true; instalable = null; }); }
+};
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function () {});
+}
+
+cargar();
+</script>
+</body>
+</html>
