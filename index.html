@@ -69,6 +69,49 @@ h2{margin:6px 0 2px;font-size:17px}
 .aviso-caja{margin:16px;padding:20px;background:var(--card);border:1px solid var(--bor);border-radius:16px;text-align:center;color:var(--mut)}
 #aviso{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:30px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:9;max-width:90%;text-align:center}
 #aviso.ver{opacity:1}
+/* vistas: citas / cotizaciones */
+.vistas{display:flex;gap:6px;padding:12px 16px 0}
+.vistas button{flex:1;padding:11px 4px;border-radius:12px;border:0;background:var(--card);color:var(--tx);font-weight:700;font-size:15px;box-shadow:0 0 0 1px var(--bor) inset;position:relative}
+.vistas button.on{background:var(--tx);color:var(--bg);box-shadow:none}
+.badge{display:inline-block;min-width:20px;padding:1px 6px;margin-left:6px;border-radius:20px;background:var(--no);color:#fff;font-size:12px;line-height:18px}
+.badge[hidden]{display:none}
+[hidden]{display:none!important}
+.cot-barra{display:flex;align-items:center;gap:8px;padding:12px 16px 0}
+.soy{display:flex;align-items:center;gap:6px;flex:1;font-size:13px;color:var(--mut)}
+.soy .qbtn{flex:0 0 auto;padding:8px 12px}
+.btn-sec{flex:0 0 auto;padding:10px 14px;border-radius:12px;border:1px solid var(--acc);background:transparent;color:var(--acc);font-weight:700;font-size:14px}
+.resumen4{grid-template-columns:repeat(4,1fr)}
+.segm{display:flex;gap:6px;padding:10px 16px 0}
+.segm button{flex:1;padding:9px 4px;border-radius:11px;color:var(--tx);background:var(--card);border:1px solid var(--bor);font-weight:600;font-size:13px}
+.segm button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.cot-top{display:flex;gap:12px;align-items:flex-start}
+.cot-foto{width:84px;height:84px;border-radius:12px;object-fit:cover;flex:0 0 auto;background:var(--bg);border:1px solid var(--bor)}
+.cot-foto.sin{display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mut);text-align:center;padding:6px}
+.cot-top h2{margin:0 0 2px}
+.cot-top .ficha{margin:0}
+.campo{width:100%;margin-top:10px;padding:12px 10px;border-radius:12px;border:1px solid var(--bor);background:var(--bg);color:var(--tx);font-size:15px}
+.campos .campo{margin-top:0}
+.campos{flex-wrap:nowrap}
+.precio-in{width:120px;flex:0 0 auto;text-align:center}
+.ventana{margin-top:8px;font-size:12.5px;color:var(--no);background:var(--bg);border-radius:8px;padding:6px 8px}
+.btn.gris{background:var(--mut)}
+.btn.acc{background:var(--acc)}
+.cot-resumen{margin:6px 0 0;font-size:14px}
+.cot-precio{font-size:22px;font-weight:800;color:var(--acc)}
+.chip-enviada{background:var(--acc);color:#fff;border-color:var(--acc)}
+.chip-aceptada{background:var(--ok);color:#fff;border-color:var(--ok)}
+.chip-rechazada,.chip-descartada{background:var(--bg)}
+/* ventanas emergentes */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:8;display:flex;align-items:flex-end;justify-content:center}
+.hoja{background:var(--card);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+.hoja h3{margin:0 0 10px;font-size:17px}
+.hoja img.prev{width:100%;border-radius:12px;border:1px solid var(--bor);display:block}
+.caption{white-space:pre-wrap;font-size:13.5px;background:var(--bg);border-radius:10px;padding:10px;margin-top:10px;color:var(--tx)}
+.conv{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--bor);border-radius:12px;padding:10px 12px;margin-bottom:8px;color:var(--tx);font-size:14px}
+.conv b{display:block;font-size:15px}
+.conv span{color:var(--mut);font-size:12.5px}
+.conv .alerta{font-size:12px}
+.foto-grande{max-width:100%;max-height:80vh;border-radius:12px;display:block;margin:0 auto}
 </style>
 </head>
 <body>
@@ -79,6 +122,12 @@ h2{margin:6px 0 2px;font-size:17px}
   <button id="inst" class="inst" hidden>Instalar</button>
 </header>
 
+<div class="vistas">
+  <button id="v-citas" class="on">Citas</button>
+  <button id="v-cot">Cotizaciones<span id="badge-cot" class="badge" hidden>0</span></button>
+</div>
+
+<section id="vista-citas">
 <nav>
   <button data-p="hoy" class="on">Hoy</button>
   <button data-p="manana">Mañana</button>
@@ -102,6 +151,45 @@ h2{margin:6px 0 2px;font-size:17px}
 
 <div id="pago" class="pago" hidden></div>
 <main id="lista"></main>
+</section>
+
+<section id="vista-cot" hidden>
+  <div class="cot-barra">
+    <div class="soy">Soy:
+      <button type="button" class="qbtn" data-soy="Vivian">Vivian</button>
+      <button type="button" class="qbtn" data-soy="Asistente">Asistente</button>
+    </div>
+    <button type="button" id="nueva-cot" class="btn-sec">+ Nueva</button>
+  </div>
+  <div class="resumen resumen4">
+    <div class="res"><b id="k-pend">—</b><span>por cotizar</span></div>
+    <div class="res"><b id="k-env">—</b><span>enviadas mes</span></div>
+    <div class="res"><b id="k-acep">—</b><span>aceptadas</span></div>
+    <div class="res"><b id="k-soles">—</b><span>soles aceptados</span></div>
+  </div>
+  <div class="segm">
+    <button type="button" data-f="pendiente" class="on">Por cotizar</button>
+    <button type="button" data-f="enviada">Enviadas</button>
+    <button type="button" data-f="cerradas">Historial</button>
+  </div>
+  <main id="cot-lista"></main>
+</section>
+
+<datalist id="sug-servicio">
+  <option value="Uñas acrílicas + decoración 3D">
+  <option value="Softgel con diseño cat eye">
+  <option value="Uñas acrílicas con diseño personalizado">
+  <option value="Manigel con diseño personalizado">
+  <option value="Softgel con nail art">
+  <option value="Acripie con diseño">
+</datalist>
+<datalist id="sug-duracion">
+  <option value="1 h"><option value="1 h 30 min"><option value="2 h">
+  <option value="2 h 30 min"><option value="3 h"><option value="3 h 30 min">
+</datalist>
+
+<div id="modal" class="modal" hidden><div class="hoja" id="hoja"></div></div>
+<canvas id="lienzo" width="1080" height="1350" hidden></canvas>
 <div id="aviso"></div>
 
 <script>
@@ -366,6 +454,406 @@ document.getElementById('atras').onclick = function () { desp = Math.max(-36, de
 document.getElementById('adelante').onclick = function () { desp = Math.min(36, desp + 1); cargar(); };
 document.getElementById('volver').onclick = function (e) { e.preventDefault(); desp = 0; cargar(); };
 
+// ================================================================
+// COTIZACIONES
+// ================================================================
+var CHATWOOT = 'https://martha-studio-chatwoot.oxfm5e.easypanel.host/app/accounts/1/conversations/';
+var cots = [];
+var cotAhora = Math.floor(Date.now() / 1000);
+var cotFiltro = 'pendiente';
+var vista = 'citas';
+var SOY = '';
+try { SOY = localStorage.getItem('sumi_quien') || ''; } catch (e) {}
+
+function hace(ts) {
+  if (!ts) return '';
+  var s = Math.max(0, cotAhora - Number(ts));
+  if (s < 3600) return 'hace ' + Math.max(1, Math.round(s / 60)) + ' min';
+  if (s < 86400) return 'hace ' + Math.round(s / 3600) + ' h';
+  var d = Math.round(s / 86400);
+  return 'hace ' + d + (d === 1 ? ' día' : ' días');
+}
+function soles(n) {
+  var v = Number(n || 0);
+  return 'S/ ' + (Math.round(v) === v ? String(v) : v.toFixed(2));
+}
+function fechaCorta(ts) {
+  var d = new Date(Number(ts) * 1000 - 5 * 3600 * 1000);
+  return ('0' + d.getUTCDate()).slice(-2) + '/' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '/' + d.getUTCFullYear();
+}
+function urlFoto(k) { return N8N + '/webhook/sumi-cot-foto?key=' + encodeURIComponent(KEY) + '&id=' + k.id; }
+function buscarCot(id) { return cots.filter(function (k) { return String(k.id) === String(id); })[0]; }
+
+function cotPost(datos) {
+  datos.key = KEY;
+  return fetch(N8N + '/webhook/sumi-cotizar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify(datos)
+  }).then(function (r) {
+    return r.json().catch(function () { return { ok: false, error: 'El servidor respondió ' + r.status }; });
+  });
+}
+
+function pintarSoy() {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-soy]'), function (b) {
+    b.classList.toggle('on', b.dataset.soy === SOY);
+  });
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-soy]'), function (b) {
+  b.onclick = function () {
+    SOY = b.dataset.soy;
+    try { localStorage.setItem('sumi_quien', SOY); } catch (e) {}
+    pintarSoy();
+  };
+});
+
+function cambiarVista(v) {
+  vista = v;
+  document.getElementById('v-citas').classList.toggle('on', v === 'citas');
+  document.getElementById('v-cot').classList.toggle('on', v === 'cot');
+  document.getElementById('vista-citas').hidden = (v !== 'citas');
+  document.getElementById('vista-cot').hidden = (v !== 'cot');
+  if (v === 'cot') { document.getElementById('periodo').textContent = 'Cotizaciones'; cargarCot(); }
+  else { cargar(); }
+}
+document.getElementById('v-citas').onclick = function () { cambiarVista('citas'); };
+document.getElementById('v-cot').onclick = function () { cambiarVista('cot'); };
+
+Array.prototype.forEach.call(document.querySelectorAll('.segm button'), function (b) {
+  b.onclick = function () {
+    Array.prototype.forEach.call(document.querySelectorAll('.segm button'), function (o) { o.classList.remove('on'); });
+    b.classList.add('on');
+    cotFiltro = b.dataset.f;
+    pintarCot();
+  };
+});
+
+function cargarCot(silencioso) {
+  if (!KEY) return;
+  if (!silencioso && vista === 'cot') document.getElementById('cot-lista').innerHTML = '<p class="vacio">Cargando…</p>';
+  return fetch(N8N + '/webhook/sumi-cotizaciones?key=' + encodeURIComponent(KEY))
+    .then(function (r) {
+      if (r.status === 401) throw new Error('La clave no es correcta');
+      if (!r.ok) throw new Error('El servidor respondió ' + r.status);
+      return r.json();
+    })
+    .then(function (d) {
+      if (!d.ok) throw new Error(d.error || 'No se pudieron leer');
+      cots = d.cotizaciones || [];
+      cotAhora = d.ahora || Math.floor(Date.now() / 1000);
+      pintarCot();
+    })
+    .catch(function (e) {
+      if (vista === 'cot') document.getElementById('cot-lista').innerHTML = '<div class="aviso-caja">No se pudieron cargar las cotizaciones.<br>' + esc(e.message) + '</div>';
+    });
+}
+
+function pintarCot() {
+  var pend = cots.filter(function (k) { return k.estado === 'pendiente'; });
+  var env = cots.filter(function (k) { return k.estado === 'enviada'; });
+  var cerr = cots.filter(function (k) { return ['aceptada', 'rechazada', 'descartada'].indexOf(k.estado) >= 0; });
+
+  var badge = document.getElementById('badge-cot');
+  badge.textContent = pend.length; badge.hidden = pend.length === 0;
+
+  // resumen del mes (por fecha de envío)
+  var h = limaHoy();
+  var inicioMes = Date.UTC(h.getUTCFullYear(), h.getUTCMonth(), 1) / 1000 + 5 * 3600;
+  var delMes = cots.filter(function (k) { return k.enviada_ts && Number(k.enviada_ts) >= inicioMes; });
+  var acep = delMes.filter(function (k) { return k.estado === 'aceptada'; });
+  document.getElementById('k-pend').textContent = pend.length;
+  document.getElementById('k-env').textContent = delMes.length;
+  document.getElementById('k-acep').textContent = acep.length + (delMes.length ? ' (' + Math.round(acep.length * 100 / delMes.length) + '%)' : '');
+  document.getElementById('k-soles').textContent = Math.round(acep.reduce(function (s, k) { return s + Number(k.precio || 0); }, 0));
+
+  var b = document.querySelectorAll('.segm button');
+  b[0].textContent = 'Por cotizar' + (pend.length ? ' (' + pend.length + ')' : '');
+  b[1].textContent = 'Enviadas' + (env.length ? ' (' + env.length + ')' : '');
+
+  var lista = cotFiltro === 'pendiente' ? pend : cotFiltro === 'enviada' ? env : cerr;
+  var cont = document.getElementById('cot-lista');
+  if (!lista.length) {
+    cont.innerHTML = '<p class="vacio">' + (cotFiltro === 'pendiente'
+      ? 'No hay cotizaciones por hacer.<br>Cuando una clienta mande un diseño para cotizar, Martha la deja aquí.'
+      : cotFiltro === 'enviada' ? 'No hay cotizaciones esperando respuesta.' : 'Aún no hay historial.') + '</p>';
+    return;
+  }
+  cont.innerHTML = lista.map(cotFiltro === 'pendiente' ? tarjetaPendiente : tarjetaCerrada).join('');
+}
+
+function fichaCot(k) {
+  var f = k.total_asistidas ? (k.total_asistidas + (Number(k.total_asistidas) === 1 ? ' visita' : ' visitas') + ' &middot; ha gastado S/ ' + Math.round(Number(k.total_gastado || 0))) : 'clienta nueva';
+  if (Number(k.no_shows) >= 2) f += ' &middot; <b class="alerta">' + k.no_shows + ' faltas</b>';
+  return f;
+}
+function miniFoto(k) {
+  return k.tiene_foto
+    ? '<img class="cot-foto" crossorigin="anonymous" src="' + esc(urlFoto(k)) + '" alt="diseño" onclick="verFoto(' + k.id + ')" onerror="this.outerHTML=\'<div class=&quot;cot-foto sin&quot;>sin foto</div>\'">'
+    : '<div class="cot-foto sin">sin foto</div>';
+}
+function linkChat(k) {
+  return k.conversation_id ? '<div class="pie"><a class="wa" href="' + CHATWOOT + Number(k.conversation_id) + '" target="_blank" rel="noopener">Abrir el chat</a></div>' : '';
+}
+
+function tarjetaPendiente(k) {
+  var id = k.id;
+  var viejo = (cotAhora - Number(k.creada_ts || 0)) > 23 * 3600;
+  var val = Number(k.validez_dias || 7);
+  var opc = [3, 7, 15, 30].map(function (d) { return '<option value="' + d + '"' + (d === val ? ' selected' : '') + '>Válida ' + d + ' días</option>'; }).join('');
+  return '<article class="cita cot" id="k_' + id + '">' +
+    '<div class="cot-top">' + miniFoto(k) +
+      '<div><h2>' + esc(k.nombre || 'Sin nombre') + '</h2>' +
+      '<p class="ficha">pidió ' + hace(k.creada_ts) + ' &middot; ' + fichaCot(k) + '</p></div></div>' +
+    (k.pedido ? '<div class="notas">' + esc(k.pedido) + '</div>' : '') +
+    (viejo ? '<div class="ventana">Pasaron más de 24 h desde que escribió: WhatsApp podría no dejar enviarle la cotización hasta que ella vuelva a escribir.</div>' : '') +
+    '<input id="ks_' + id + '" class="campo" list="sug-servicio" placeholder="Servicio (ej. Uñas acrílicas + decoración 3D)" value="' + esc(k.servicio || '') + '" onchange="guardarCot(' + id + ')">' +
+    '<div class="campos" style="margin-top:8px">' +
+      '<input id="kp_' + id + '" class="campo precio-in" type="number" inputmode="decimal" placeholder="S/ precio" value="' + (k.precio === null || k.precio === undefined ? '' : Number(k.precio)) + '" onchange="guardarCot(' + id + ')">' +
+      '<input id="kd_' + id + '" class="campo" list="sug-duracion" placeholder="Duración (ej. 2 h)" value="' + esc(k.duracion || '') + '" onchange="guardarCot(' + id + ')">' +
+    '</div>' +
+    '<div class="campos" style="margin-top:8px">' +
+      '<select id="kv_' + id + '" class="campo" style="flex:0 0 auto;width:auto" onchange="guardarCot(' + id + ')">' + opc + '</select>' +
+      '<input id="kn_' + id + '" class="campo" placeholder="Nota (opcional)" value="' + esc(k.nota || '') + '" onchange="guardarCot(' + id + ')">' +
+    '</div>' +
+    '<div class="acciones">' +
+      '<button class="btn acc" onclick="previsualizar(' + id + ')">Ver y enviar</button>' +
+      '<button class="btn gris" style="flex:0 0 auto;padding:13px 16px" onclick="cerrarCot(this,' + id + ',\'descartada\')">Descartar</button>' +
+    '</div>' + linkChat(k) +
+    '</article>';
+}
+
+function tarjetaCerrada(k) {
+  var chip = { enviada: 'esperando', aceptada: 'aceptó', rechazada: 'no aceptó', descartada: 'descartada' }[k.estado] || k.estado;
+  var vence = k.enviada_ts ? (Number(k.enviada_ts) + Number(k.validez_dias || 7) * 86400) : 0;
+  var info = [];
+  if (k.enviada_ts) info.push('enviada ' + hace(k.enviada_ts) + (k.enviada_por ? ' por ' + esc(k.enviada_por) : ''));
+  if (k.estado === 'enviada' && vence) info.push(vence < cotAhora ? '<b class="alerta">venció el ' + fechaCorta(vence) + '</b>' : 'válida hasta el ' + fechaCorta(vence));
+  var acciones = k.estado === 'enviada'
+    ? '<div class="acciones"><button class="btn si" onclick="cerrarCot(this,' + k.id + ',\'aceptada\')">Aceptó</button>' +
+      '<button class="btn no" onclick="cerrarCot(this,' + k.id + ',\'rechazada\')">No aceptó</button></div>'
+    : '';
+  return '<article class="cita cot" id="k_' + k.id + '">' +
+    '<div class="top"><span class="cot-precio">' + (k.precio !== null && k.precio !== undefined ? soles(k.precio) : '—') + '</span>' +
+    '<span class="chip chip-' + esc(k.estado) + '">' + esc(chip) + '</span></div>' +
+    '<div class="cot-top" style="margin-top:8px">' + miniFoto(k) +
+      '<div><h2>' + esc(k.nombre || 'Sin nombre') + '</h2>' +
+      '<p class="cot-resumen">' + esc(k.servicio || '(sin servicio)') + (k.duracion ? ' &middot; ' + esc(k.duracion) : '') + '</p>' +
+      '<p class="ficha">' + info.join(' &middot; ') + '</p></div></div>' +
+    acciones + linkChat(k) +
+    '</article>';
+}
+
+function leerCampos(id) {
+  return {
+    id: id,
+    servicio: document.getElementById('ks_' + id).value.trim(),
+    precio: document.getElementById('kp_' + id).value,
+    duracion: document.getElementById('kd_' + id).value.trim(),
+    validez_dias: Number(document.getElementById('kv_' + id).value),
+    nota: document.getElementById('kn_' + id).value.trim()
+  };
+}
+
+function guardarCot(id) {
+  var d = leerCampos(id);
+  var k = buscarCot(id);
+  if (k) { k.servicio = d.servicio; k.precio = d.precio === '' ? null : Number(d.precio); k.duracion = d.duracion; k.validez_dias = d.validez_dias; k.nota = d.nota; }
+  d.accion = 'guardar';
+  cotPost(d).then(function (r) { toast(r.ok ? 'Guardado' : ('No se guardó: ' + (r.error || '')), !r.ok); })
+    .catch(function () { toast('Sin conexión'); });
+}
+
+function cerrarCot(btn, id, estado) {
+  if (estado === 'descartada' && !confirm('¿Descartar esta cotización? No se le envía nada a la clienta.')) return;
+  btn.disabled = true;
+  cotPost({ accion: estado, id: id }).then(function (r) {
+    if (r.ok) {
+      var k = buscarCot(id); if (k) { k.estado = estado; k.cerrada_ts = cotAhora; }
+      pintarCot();
+      toast(estado === 'aceptada' ? 'Marcada: aceptó' : estado === 'rechazada' ? 'Marcada: no aceptó' : 'Descartada');
+    } else { toast('No se guardó: ' + (r.error || ''), true); btn.disabled = false; }
+  }).catch(function () { toast('Sin conexión'); btn.disabled = false; });
+}
+
+// ---------- ventana emergente ----------
+function abrirModal(html) {
+  document.getElementById('hoja').innerHTML = html;
+  document.getElementById('modal').hidden = false;
+}
+function cerrarModal() { document.getElementById('modal').hidden = true; document.getElementById('hoja').innerHTML = ''; }
+document.getElementById('modal').onclick = function (e) { if (e.target.id === 'modal') cerrarModal(); };
+
+function verFoto(id) {
+  var k = buscarCot(id); if (!k) return;
+  abrirModal('<h3>Diseño de ' + esc(k.nombre || 'la clienta') + '</h3><img class="foto-grande" crossorigin="anonymous" src="' + esc(urlFoto(k)) + '" alt="">' +
+    '<div class="acciones"><button class="btn gris" onclick="cerrarModal()">Cerrar</button></div>');
+}
+
+// ---------- imagen de la cotización ----------
+function cargarImg(src, cors) {
+  return new Promise(function (ok) {
+    var i = new Image();
+    if (cors) i.crossOrigin = 'anonymous';
+    i.onload = function () { ok(i); };
+    i.onerror = function () { ok(null); };
+    i.src = src;
+  });
+}
+function rect(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function partir(c, texto, ancho, maxLineas) {
+  var palabras = String(texto).split(/\s+/), lineas = [], l = '';
+  palabras.forEach(function (p) {
+    var prueba = l ? l + ' ' + p : p;
+    if (c.measureText(prueba).width > ancho && l) { lineas.push(l); l = p; } else { l = prueba; }
+  });
+  if (l) lineas.push(l);
+  if (lineas.length > maxLineas) { lineas = lineas.slice(0, maxLineas); lineas[maxLineas - 1] += '…'; }
+  return lineas;
+}
+
+function dibujarCotizacion(k, d, conFoto) {
+  var cv = document.getElementById('lienzo'), c = cv.getContext('2d');
+  var W = 1080, H = 1350, F = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  var ACC = '#b0417a', TX = '#2b2028', MUT = '#7d6d77';
+  return Promise.all([cargarImg('icono.png', false), conFoto && k.tiene_foto ? cargarImg(urlFoto(k), true) : Promise.resolve(null)])
+    .then(function (imgs) {
+      var logo = imgs[0], foto = imgs[1];
+      // el alto crece si el servicio o la nota son largos, para que nada se monte
+      c.font = '800 50px ' + F; var nServ = partir(c, d.servicio, W - 120, 3).length;
+      c.font = 'italic 500 32px ' + F; var nNota = d.nota ? partir(c, d.nota, W - 120, 2).length : 0;
+      var alto = (foto ? 340 + 520 + 70 : 400) + nServ * 62 + 114 + (d.duracion ? 50 : 0) + 50 + nNota * 44 + 230;
+      H = Math.max(1350, alto);
+      cv.height = H;
+      c = cv.getContext('2d');
+      c.clearRect(0, 0, W, H);
+      c.fillStyle = '#fbf5f8'; c.fillRect(0, 0, W, H);
+      // encabezado
+      c.fillStyle = ACC; c.fillRect(0, 0, W, 230);
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(135, 115, 80, 0, Math.PI * 2); c.fill();
+      if (logo) { c.save(); c.beginPath(); c.arc(135, 115, 76, 0, Math.PI * 2); c.clip(); c.drawImage(logo, 59, 39, 152, 152); c.restore(); }
+      c.fillStyle = '#fff'; c.textBaseline = 'alphabetic';
+      c.font = '800 64px ' + F; c.fillText('Sumi Queen', 250, 115);
+      c.font = '500 34px ' + F; c.globalAlpha = .9; c.fillText('Cotización personalizada', 250, 165); c.globalAlpha = 1;
+      // para
+      var y = 300;
+      c.fillStyle = MUT; c.font = '500 34px ' + F; c.fillText('Para', 60, y);
+      c.fillStyle = TX; c.font = '700 42px ' + F; c.fillText(String(k.nombre || 'ti').slice(0, 34), 145, y);
+      c.textAlign = 'right'; c.fillStyle = MUT; c.font = '500 30px ' + F; c.fillText(fechaCorta(cotAhora), W - 60, y); c.textAlign = 'left';
+      y += 40;
+      // foto del diseño (recortada para llenar el marco)
+      if (foto) {
+        var fh = 520, fw = W - 120, esc2 = Math.max(fw / foto.width, fh / foto.height);
+        var sw = fw / esc2, sh = fh / esc2;
+        c.save(); rect(c, 60, y, fw, fh, 28); c.clip();
+        c.drawImage(foto, (foto.width - sw) / 2, (foto.height - sh) / 2, sw, sh, 60, y, fw, fh);
+        c.restore();
+        y += fh + 70;
+      } else { y += 60; }
+      // servicio
+      c.fillStyle = TX; c.font = '800 50px ' + F;
+      partir(c, d.servicio, W - 120, 3).forEach(function (l) { c.fillText(l, 60, y); y += 62; });
+      // precio
+      y += 50; c.fillStyle = ACC; c.font = '900 112px ' + F; c.fillText(soles(d.precio), 60, y);
+      y += 64; c.font = '500 36px ' + F; c.fillStyle = MUT;
+      if (d.duracion) { c.fillText('Duración aprox.: ' + d.duracion, 60, y); y += 50; }
+      c.fillText('Válida hasta el ' + fechaCorta(cotAhora + d.validez_dias * 86400), 60, y); y += 50;
+      if (d.nota) { c.font = 'italic 500 32px ' + F; partir(c, d.nota, W - 120, 2).forEach(function (l) { c.fillText(l, 60, y); y += 44; }); }
+      // reserva
+      var by = H - 190;
+      c.fillStyle = 'rgba(176,65,122,.10)'; rect(c, 40, by, W - 80, 150, 26); c.fill();
+      c.fillStyle = ACC; c.font = '800 34px ' + F; c.fillText('Separa tu cita con S/ 10 por Yape o Plin', 75, by + 58);
+      c.fillStyle = TX; c.font = '600 30px ' + F; c.fillText('908 856 975 · a nombre de Vivian Tovar', 75, by + 104);
+      c.fillStyle = MUT; c.font = '500 24px ' + F; c.textAlign = 'center';
+      c.fillText('Calle 7 de Enero #1566, Galería Romero, stands 18 y 20 · Chiclayo', W / 2, H - 14); c.textAlign = 'left';
+      try { return { url: cv.toDataURL('image/jpeg', 0.86), conFoto: !!foto }; }
+      catch (e) { return null; } // la foto no dejó exportar: se reintenta sin ella
+    })
+    .then(function (r) { return r || (conFoto ? dibujarCotizacion(k, d, false) : null); });
+}
+
+var envioActual = null;
+function previsualizar(id) {
+  var k = buscarCot(id); if (!k) return;
+  var d = leerCampos(id);
+  if (!d.servicio) { toast('Escribe el servicio', true); document.getElementById('ks_' + id).focus(); return; }
+  if (d.precio === '' || !(Number(d.precio) >= 0)) { toast('Pon el precio', true); document.getElementById('kp_' + id).focus(); return; }
+  if (!SOY) { toast('Arriba elige quién eres: Vivian o Asistente', true); return; }
+  d.precio = Number(d.precio);
+  abrirModal('<p class="vacio">Armando la cotización…</p>');
+  dibujarCotizacion(k, d, true).then(function (img) {
+    if (!img) { abrirModal('<p class="vacio">No se pudo armar la imagen.</p><div class="acciones"><button class="btn gris" onclick="cerrarModal()">Cerrar</button></div>'); return; }
+    envioActual = { k: k, d: d, img: img.url };
+    var primer = String(k.nombre || '').trim().split(/\s+/)[0] || '';
+    var texto = '¡Hola' + (primer ? ' ' + primer.charAt(0).toUpperCase() + primer.slice(1).toLowerCase() : '') + '! ✨ Aquí tienes tu cotización de Sumi Queen 👑\n\n💅 ' + d.servicio + '\n💰 ' + soles(d.precio) +
+      (d.duracion ? '\n⏱️ Duración aprox.: ' + d.duracion : '') + '\n📅 Válida hasta el ' + fechaCorta(cotAhora + d.validez_dias * 86400) +
+      (d.nota ? '\n📝 ' + d.nota : '') + '\n\nPara separar tu cita envía S/ 10 al Yape o Plin 908856975 a nombre de Vivian Tovar 💖 ¿Qué día te gustaría venir, bella?';
+    abrirModal('<h3>Así le llegará a ' + esc(k.nombre || 'la clienta') + '</h3>' +
+      '<img class="prev" src="' + img.url + '" alt="cotización">' +
+      (k.tiene_foto && !img.conFoto ? '<div class="ventana">No se pudo poner la foto del diseño en la imagen; se envía sin ella.</div>' : '') +
+      '<div class="caption">' + esc(texto) + '</div>' +
+      '<div class="acciones"><button id="btn-enviar" class="btn si" onclick="enviarCot()">Enviar por WhatsApp</button>' +
+      '<button class="btn gris" style="flex:0 0 auto;padding:13px 16px" onclick="cerrarModal()">Corregir</button></div>' +
+      '<p class="ficha" style="text-align:center;margin-top:10px">Al enviarla, Martha vuelve a atender a la clienta para agendarle la cita.</p>');
+  });
+}
+
+function enviarCot() {
+  if (!envioActual) return;
+  var e = envioActual, b = document.getElementById('btn-enviar');
+  b.disabled = true; b.textContent = 'Enviando…';
+  var datos = {
+    accion: 'enviar', id: e.k.id, nombre: e.k.nombre || '', quien: SOY, imagen: e.img,
+    servicio: e.d.servicio, precio: e.d.precio, duracion: e.d.duracion, validez_dias: e.d.validez_dias, nota: e.d.nota
+  };
+  cotPost(datos).then(function (r) {
+    if (r.ok) {
+      cerrarModal(); envioActual = null;
+      toast('Cotización enviada ✨');
+      cargarCot(true);
+    } else {
+      b.disabled = false; b.textContent = 'Enviar por WhatsApp';
+      toast(r.error || 'No se pudo enviar', true);
+    }
+  }).catch(function () { b.disabled = false; b.textContent = 'Enviar por WhatsApp'; toast('Sin conexión'); });
+}
+
+// ---------- nueva cotización a mano ----------
+var convs = [];
+document.getElementById('nueva-cot').onclick = function () {
+  abrirModal('<h3>¿A qué clienta le cotizas?</h3><p class="vacio">Cargando chats…</p>');
+  fetch(N8N + '/webhook/sumi-conversaciones?key=' + encodeURIComponent(KEY))
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d.ok) throw new Error(d.error || 'error');
+      convs = d.conversaciones || [];
+      cotAhora = d.ahora || cotAhora;
+      abrirModal('<h3>¿A qué clienta le cotizas?</h3>' + (convs.length ? convs.map(function (c, i) {
+        return '<button class="conv" onclick="crearCot(' + i + ')"><b>' + esc(c.nombre || c.telefono || 'Sin nombre') + '</b>' +
+          '<span>' + hace(c.ts) + (c.ultimo ? ' &middot; ' + esc(c.ultimo) : '') + '</span>' +
+          (c.puede ? '' : '<br><span class="alerta">más de 24 h sin escribir: WhatsApp no deja enviarle</span>') + '</button>';
+      }).join('') : '<p class="vacio">No hay chats recientes.</p>') +
+        '<div class="acciones"><button class="btn gris" onclick="cerrarModal()">Cancelar</button></div>');
+    })
+    .catch(function () { abrirModal('<p class="vacio">No se pudieron leer los chats.</p><div class="acciones"><button class="btn gris" onclick="cerrarModal()">Cerrar</button></div>'); });
+};
+function crearCot(i) {
+  var c = convs[i]; if (!c) return;
+  cotPost({ accion: 'nueva', conversation_id: c.id, nombre: c.nombre, telefono: c.telefono, quien: SOY }).then(function (r) {
+    if (!r.ok) { toast(r.error || 'No se pudo crear', true); return; }
+    cerrarModal();
+    cotFiltro = 'pendiente';
+    Array.prototype.forEach.call(document.querySelectorAll('.segm button'), function (o) { o.classList.toggle('on', o.dataset.f === 'pendiente'); });
+    cargarCot(true).then(function () {
+      var el = document.getElementById('k_' + r.id);
+      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); var s = document.getElementById('ks_' + r.id); if (s) s.focus(); }
+    });
+  }).catch(function () { toast('Sin conexión'); });
+}
+
 // instalacion como app
 var instalable = null;
 window.addEventListener('beforeinstallprompt', function (e) {
@@ -384,7 +872,9 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(function () {});
 }
 
-cargar();
+pintarSoy();
+if (new URLSearchParams(location.search).get('v') === 'cot') { cambiarVista('cot'); }
+else { cargar(); cargarCot(true); } // en segundo plano, para el numerito de pendientes
 </script>
 </body>
 </html>
