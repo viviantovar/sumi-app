@@ -322,7 +322,8 @@ function tarjeta(c) {
   var paso = esSinCita(c);
   var notas = c.notas ? '<div class="notas">' + esc(c.notas) + '</div>' : '';
   var borrar = (paso && estado !== 'cancelada') ? '<a class="borrar" href="#" onclick="borrarSinCita(event,\'' + id + '\')">Borrar registro</a>' : '';
-  var wa = (tel || borrar) ? '<div class="pie">' + (tel ? '<a class="wa" href="https://wa.me/' + tel + '" target="_blank" rel="noopener">Escribirle por WhatsApp</a>' : '') + borrar + '</div>' : '';
+  var tarjetaLink = (tel && c.tarjeta_token) ? '<a class="wa" style="margin-left:14px" href="https://wa.me/' + tel + '?text=' + encodeURIComponent('¡Hola ' + String(c.nombre || '').split(' ')[0] + '! ⭐ Esta es tu tarjeta de puntos de Sumi Queen:\nhttps://sumitrace.viviantovar.com/tarjeta/?c=' + c.tarjeta_token + '\n\n📲 Guárdala en tu pantalla de inicio para ver tus sellos 💖') + '" target="_blank" rel="noopener">⭐ Enviar tarjeta</a>' : '';
+  var wa = (tel || borrar) ? '<div class="pie">' + (tel ? '<a class="wa" href="https://wa.me/' + tel + '" target="_blank" rel="noopener">Escribirle por WhatsApp</a>' : '') + tarjetaLink + borrar + '</div>' : '';
   var chip = estado === 'asistio' ? 'vino' : estado === 'no_asistio' ? 'no vino' : estado === 'cancelada' ? 'cancelada' : 'pendiente';
 
   var acciones = estado === 'cancelada' ? '' :
