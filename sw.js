@@ -1,6 +1,6 @@
 // Service worker de la app de Sumi Queen
 // Guarda la carcasa de la app para que abra rapido y funcione sin internet.
-var CACHE = 'sumi-v5';
+var CACHE = 'sumi-v6';
 var BASICOS = ['./', './index.html', './manifest.json', './icono.png'];
 
 self.addEventListener('install', function (e) {

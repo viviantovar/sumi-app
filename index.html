@@ -324,7 +324,8 @@ function tarjeta(c) {
   var notas = c.notas ? '<div class="notas">' + esc(c.notas) + '</div>' : '';
   var borrar = (paso && estado !== 'cancelada') ? '<a class="borrar" href="#" onclick="borrarSinCita(event,\'' + id + '\')">Borrar registro</a>' : '';
   var tarjetaLink = (tel && c.tarjeta_token) ? '<a class="wa" style="margin-left:14px" href="https://wa.me/' + tel + '?text=' + encodeURIComponent('¡Hola ' + String(c.nombre || '').split(' ')[0] + '! ⭐ Esta es tu tarjeta de puntos de Sumi Queen:\nhttps://sumitrace.viviantovar.com/tarjeta/?c=' + c.tarjeta_token + '\n\n📲 Guárdala en tu pantalla de inicio para ver tus sellos 💖') + '" target="_blank" rel="noopener">⭐ Enviar tarjeta</a>' : '';
-  var wa = (tel || borrar) ? '<div class="pie">' + (tel ? '<a class="wa" href="https://wa.me/' + tel + '" target="_blank" rel="noopener">Escribirle por WhatsApp</a>' : '') + tarjetaLink + borrar + '</div>' : '';
+  var mover = estado !== 'cancelada' ? '<a class="wa" style="margin-left:14px" href="#" onclick="abrirCambiarHora(event,\'' + id + '\')">🕐 Cambiar hora</a>' : '';
+  var wa = (tel || borrar || mover) ? '<div class="pie">' + (tel ? '<a class="wa" href="https://wa.me/' + tel + '" target="_blank" rel="noopener">Escribirle por WhatsApp</a>' : '') + tarjetaLink + mover + borrar + '</div>' : '';
   var chip = estado === 'asistio' ? 'vino' : estado === 'no_asistio' ? 'no vino' : estado === 'cancelada' ? 'cancelada' : 'pendiente';
 
   var acciones = estado === 'cancelada' ? '' :
@@ -524,6 +525,43 @@ function borrarSinCita(e, id) {
     .then(function (r) { return r.json(); })
     .then(function (d) { if (d && d.ok) { toast('Registro borrado'); cargar(); } else { toast('No se pudo borrar', true); } })
     .catch(function () { toast('Sin conexión'); });
+}
+
+// ---------- cambiar la hora de una cita (llegó antes, o se movió para atender a otra) ----------
+function abrirCambiarHora(e, id) {
+  e.preventDefault();
+  var c = citas.filter(function (q) { return q.event_id === id; })[0] || {};
+  var fecha = c.dia_iso || limaHoy().toISOString().slice(0, 10);
+  abrirModal('<h3>Cambiar hora</h3>' +
+    '<p class="ficha">' + esc(c.nombre || '') + ' &middot; ' + esc(String(c.servicio || '').replace(MARCA_SIN_CITA, '')) + '</p>' +
+    '<span class="etq">Nuevo día y hora</span>' +
+    '<div class="campos" style="margin-top:10px">' +
+      '<input id="ch-fecha" class="campo" type="date" value="' + esc(fecha) + '">' +
+      '<input id="ch-hora" class="campo" type="time" value="' + esc(c.hora || '') + '">' +
+    '</div>' +
+    '<p class="ficha">También se mueve en el calendario, así Martha ve libre el horario anterior.</p>' +
+    '<div class="acciones"><button id="ch-guardar" class="btn si" onclick="guardarCambiarHora(\'' + esc(id) + '\')">Guardar nueva hora</button>' +
+    '<button class="btn gris" style="flex:0 0 auto;padding:13px 16px" onclick="cerrarModal()">Cancelar</button></div>');
+  document.getElementById('ch-hora').focus();
+}
+
+function guardarCambiarHora(id) {
+  var fecha = document.getElementById('ch-fecha').value;
+  var hora = document.getElementById('ch-hora').value;
+  if (!fecha || !hora) { toast('Elige el día y la hora', true); return; }
+  var b = document.getElementById('ch-guardar');
+  b.disabled = true; b.textContent = 'Guardando…';
+  fetch(N8N + '/webhook/sumi-guardar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify({ key: KEY, accion: 'cambiar_hora', event_id: id, fecha: fecha, hora: hora })
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && d.ok) { cerrarModal(); toast('Hora cambiada a las ' + hora); cargar(); }
+      else { b.disabled = false; b.textContent = 'Guardar nueva hora'; toast(d && d.error ? ('No se guardó: ' + d.error) : 'No se pudo guardar', true); }
+    })
+    .catch(function () { b.disabled = false; b.textContent = 'Guardar nueva hora'; toast('Sin conexión'); });
 }
 
 function marcar(btn, id, estado) { guardar(id, estado, btn, false); }
